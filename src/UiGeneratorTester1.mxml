@@ -52,11 +52,11 @@
 
 			 // Transformer functions to be used with `_onTestButtonClicked()`
 			private function __increaseInteger (o : Object, key : String) : Object { 
-				return o[key] += 10;
+				return (o[key] + 10);
 			}
 			
 			private function __increaseNumber (o : Object, key : String) : Object {
-				return o[key] += 0.01;
+				return (o[key] + 0.01);
 			}
 			
 			private function __toggleBoolean  (o : Object, key:String) : Object {

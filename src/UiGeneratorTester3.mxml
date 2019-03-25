@@ -45,9 +45,16 @@
 			}
 			
 			/**
-			 * Triggered when a test button is clicked.
+			 * Triggered when a test button is clicked. Causes a programmatical change to a property in 
+			 * the "originator" class; if binding works, the generated control should automatically update.
 			 */
-			private function _onTestButtonClicked () : void {
+			private function _onTestButtonClicked (memberName : String, transformerFunction : Function) : void {
+				_classToRender[memberName] = transformerFunction (_classToRender, memberName);
+			}
+			
+			// Transformer functions to be used with `_onTestButtonClicked()`
+			private function __increaseInteger (o : Object, key : String) : Object { 
+				return (o[key] + 10);
 			}
 			
 		]]>
@@ -65,12 +72,12 @@
 	</s:SkinnableContainer>
 	
 	<!-- Area for testing buttons -->
-	<s:Label text="Add test buttons as needed..." left="10" right="10" bottom="120"/>
+	<s:Label text="Programmatically change the value associated with..." left="10" right="10" bottom="120"/>
 	<s:Group left="10" right="10" bottom="10" height="100">
 		<s:layout>
 			<s:TileLayout horizontalGap="10" verticalGap="10" columnAlign="justifyUsingWidth"/>
 		</s:layout>
-		<s:Button label="Test something" click="_onTestButtonClicked ()" />
+		<s:Button label="My Number" click="_onTestButtonClicked ('myNumber', __increaseInteger)" />
 	</s:Group>
 	
 </s:WindowedApplication>

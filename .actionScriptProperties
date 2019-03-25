@@ -9,10 +9,9 @@
           <libraryPathEntry kind="3" linkType="1" path="${PROJECT_FRAMEWORKS}/libs/core.swc" useDefaultLinkType="false"/>
         </excludedEntries>
       </libraryPathEntry>
-      <libraryPathEntry kind="1" linkType="1" path="libs"/>
       <libraryPathEntry kind="3" linkType="1" path="/ui-generator-library/bin/ui-generator-library.swc" useDefaultLinkType="false"/>
       <libraryPathEntry kind="3" linkType="1" path="/ui-generator-flex-builder/bin/ui-generator-flex-builder.swc" useDefaultLinkType="false"/>
-      <libraryPathEntry kind="3" linkType="1" path="K:/WORKSPACE/Flex-4-16-1--AIR-SDK-28--64bit/frameworks/libs/mx/mx.swc" useDefaultLinkType="false"/>
+      <libraryPathEntry kind="3" linkType="1" path="K:/WORKSPACE/FLEX_SDKS/Flex-4-16-1--AIR-SDK-28--64bit/frameworks/libs/mx/mx.swc" useDefaultLinkType="false"/>
       <libraryPathEntry kind="3" linkType="1" path="K:/DATA/RW/PROJECTS/_PROGRAMMING_/_PROJECTS_/utils-library/trunk/bin/utils-library.swc" useDefaultLinkType="false"/>
       <libraryPathEntry kind="3" linkType="1" path="K:/DATA/RW/PROJECTS/_PROGRAMMING_/_PROJECTS_/utils-library/trunk/bin/utils-library.swc" useDefaultLinkType="false"/>
       <libraryPathEntry kind="3" linkType="1" path="k:/DATA/RW/PROJECTS/_PROGRAMMING_/_PROJECTS_/observer-library/trunk/bin/observer-library.swc" useDefaultLinkType="false"/>
@@ -48,4 +47,3 @@
     </buildTarget>
   </buildTargets>
 </actionScriptProperties>
-

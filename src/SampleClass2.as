@@ -5,18 +5,19 @@ package {
 	 */
 	public class SampleClass2 {
 		
-		private var _myNumber : Number;
+		private var _myNumber : Number = 10;
 		
 		public function SampleClass2() {}
 		
 		// This should render as a custom component of type PickerComponent
-		[CustomComponent(classFqn="custom_components.NonEditableNumericStepper",dataproviderName="value","minimum"="-10")]
-		public function get myNumber() : Number {
-			return _myNumber;
-		}
+		[Bindable]
+		[CustomComponent(classFqn="custom_components.NonEditableNumericStepper",dataproviderName="value",minimum="-10",maximum="100")]
 		public function set myNumber (value : Number) : void {
 			_myNumber = value;
 			_onValueChanged ('myNumber', value);
+		}
+		public function get myNumber() : Number {
+			return _myNumber;
 		}
 		
 		/**
