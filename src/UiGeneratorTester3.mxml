@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:WindowedApplication xmlns:fx="http://ns.adobe.com/mxml/2009" 
+					   xmlns:s="library://ns.adobe.com/flex/spark" 
+					   xmlns:mx="library://ns.adobe.com/flex/mx"
+					   initialize="_onInitialize (event)"
+					   height="600"
+					   title="Test 3 - Custom components">
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.events.FlexEvent;
+			
+			import custom_components.NonEditableNumericStepper;
+			
+			import ro.ciacob.desktop.ui.UiFlexBuilder;
+			import ro.ciacob.desktop.ui.UiGenerator;
+			
+			private var _uiGenerator : UiGenerator;
+			private var _classToRender : SampleClass2;
+			
+			private var compiler_helper_1 : NonEditableNumericStepper;
+			
+			/**
+			 * Stage-two constructor-like function for MXML classes. Components are initialized
+			 * but not configured and not rendered yet.
+			 */
+			private function _onInitialize (event:FlexEvent) : void {
+				_uiGenerator = new UiGenerator (UiFlexBuilder);
+				_classToRender = new SampleClass2;
+				_generate ();
+			}
+			
+			/**
+			 * Builds UI components using current originator, container and callback(s)
+			 */
+			private function _generate () : void {
+				_uiGenerator.generate (_classToRender, renderingArea, _onRenderingComplete);
+			}
+			
+			/**
+			 * Fired when generating UI Components has completed.
+			 */
+			private function _onRenderingComplete () : void {
+				trace ("Generating UI Components done.");
+			}
+			
+			/**
+			 * Triggered when a test button is clicked. Causes a programmatical change to a property in 
+			 * the "originator" class; if binding works, the generated control should automatically update.
+			 */
+			private function _onTestButtonClicked (memberName : String, transformerFunction : Function) : void {
+				_classToRender[memberName] = transformerFunction (_classToRender, memberName);
+			}
+			
+			// Transformer functions to be used with `_onTestButtonClicked()`
+			private function __increaseInteger (o : Object, key : String) : Object { 
+				return (o[key] + 10);
+			}
+			
+		]]>
+	</fx:Script>
+	
+	<!-- Area for generated UI Components -->
+	<s:SkinnableContainer left="10" top="10" right="0" bottom="140">
+		<s:Scroller width="100%" height="100%">
+			<s:Group id="renderingArea">
+				<s:layout>
+					<s:VerticalLayout horizontalAlign="justify" gap="10" paddingRight="10" />
+				</s:layout>
+			</s:Group>
+		</s:Scroller>
+	</s:SkinnableContainer>
+	
+	<!-- Area for testing buttons -->
+	<s:Label text="Programmatically change the value associated with..." left="10" right="10" bottom="120"/>
+	<s:Group left="10" right="10" bottom="10" height="100">
+		<s:layout>
+			<s:TileLayout horizontalGap="10" verticalGap="10" columnAlign="justifyUsingWidth"/>
+		</s:layout>
+		<s:Button label="My Number" click="_onTestButtonClicked ('myNumber', __increaseInteger)" />
+	</s:Group>
+	
+</s:WindowedApplication>

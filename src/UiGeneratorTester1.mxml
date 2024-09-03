@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:WindowedApplication xmlns:fx="http://ns.adobe.com/mxml/2009" 
+					   xmlns:s="library://ns.adobe.com/flex/spark" 
+					   xmlns:mx="library://ns.adobe.com/flex/mx"
+					   initialize="_onInitialize (event)"
+					   showStatusBar="false"
+					   title="Test 1 - Generating from sealed class `SampleClass`"
+					   height="600">
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.events.FlexEvent;
+			import mx.utils.ObjectUtil;
+			
+			import ro.ciacob.desktop.ui.UiFlexBuilder;
+			import ro.ciacob.desktop.ui.UiGenerator;
+			
+			private var _uiGenerator : UiGenerator;
+			private var _classToRender : SampleClass;
+			
+			/**
+			 * Stage-two constructor-like function for MXML classes. At this stage,
+			 * components are initialized but not configured, and not rendered yet.
+			 */
+			private function _onInitialize (event:FlexEvent) : void {
+				_uiGenerator = new UiGenerator (UiFlexBuilder);
+				_classToRender = new SampleClass;
+				_generate ();
+			}
+			
+			/**
+			 * Builds UI components using current originator, container and callback(s)
+			 */
+			private function _generate () : void {
+				_uiGenerator.generate (_classToRender, renderingArea, _onRenderingComplete);
+			}
+			
+			/**
+			 * Fired when generating UI Components has completed.
+			 */
+			private function _onRenderingComplete () : void {
+				trace ("Generating UI Components done.");
+			}
+			
+			/**
+			 * Triggered when a test button is clicked. Causes a programmatical change to a property in 
+			 * the "originator" class; if binding works, the generated control should automatically update.
+			 */
+			private function _onTestButtonClicked (memberName : String, transformerFunction : Function) : void {
+				_classToRender[memberName] = transformerFunction (_classToRender, memberName);
+			}
+
+			 // Transformer functions to be used with `_onTestButtonClicked()`
+			private function __increaseInteger (o : Object, key : String) : Object { 
+				return (o[key] + 10);
+			}
+			
+			private function __increaseNumber (o : Object, key : String) : Object {
+				return (o[key] + 0.01);
+			}
+			
+			private function __toggleBoolean  (o : Object, key:String) : Object {
+				return !o[key];
+			}
+			
+			private function __randomizeSingleChoice (o : Object, key : String) : Object {
+				var src : Array = o[key + 'Src'];
+				var current : Object = o[key];
+				var choice : Object = current;
+				do {
+					choice = src[Math.floor (Math.random() * src.length)];
+				} while (choice === current);
+				return choice;
+			}
+			
+			private function __randomizeMultipleChoice (o : Object, key : String) : Object {
+				var src : Array = o[key + 'Src'];
+				var srcClone : Array;
+				var chosenIndex : int;
+				var chosenIndices : Array;
+				var current : Array = o[key];
+				var choices : Array = current;
+				var numChoices : int;
+				do {
+					choices = [];
+					chosenIndices = [];
+					srcClone = src.concat();
+					numChoices = Math.floor (Math.random() * srcClone.length) + 1;
+					while (numChoices > 0) {
+						chosenIndex = Math.floor (Math.random() * srcClone.length);
+						srcClone.splice (chosenIndex, 1);
+						chosenIndices.push (chosenIndex);
+						numChoices--;
+					}
+					chosenIndices.sort();
+					while (chosenIndices.length > 0) {
+						choices.push (src[chosenIndices.shift()]);
+					}
+					__removeDuplicates (choices);
+				} while (__arraysAreEqual (choices, current));
+				return choices;
+			}
+			
+			/**
+			 * Helper for transformer function `__randomizeMultipleChoice()`
+			 */
+			private function __arraysAreEqual (arrayA : Array, arrayB : Array) : Boolean {
+				if (arrayA == null) {
+					return false;
+				}
+				if (arrayB == null) {
+					return false;
+				}
+				arrayA.sort (__sortChoiceOptions);
+				arrayB.sort (__sortChoiceOptions);
+				var arrALen : uint = arrayA.length;
+				if (arrALen != arrayB.length) {
+					return false;
+				}
+				var i : int = 0; 
+				for (i; i < arrALen; i++) {
+					if (arrayA[i] != arrayB[i]) {
+						return false;
+					}
+				}
+				return true;
+			}
+			
+			/**
+			 * Helper for transformer function `__randomizeMultipleChoice()`
+			 */
+			private function __removeDuplicates (array : Array) : void {
+				if (array != null && array.length > 0) {
+					var tmp : Array = array.concat ();
+					var objIndices : Array = [];
+					array.splice (0);
+					for (var i : int = 0; i < tmp.length; i++) {
+						var el : Object = tmp[i];
+						if (el.constructor && el.constructor == Object) {
+							var identicalObjects : Array = objIndices.filter (
+								function (objIndex : Object, i : int, arr: Array) : Boolean {
+									var objToTest : Object = (array [objIndex as int] as Object);
+									return (ObjectUtil.compare (el, objToTest) == 0);
+								}
+							);
+							if (identicalObjects.length == 0) {
+								array.push (el);
+								objIndices.push (array.length - 1);
+							}
+						} else {
+							if (array.indexOf (el) == -1) {
+								array.push (el);
+							}
+						}
+					}
+				}
+			}
+
+			private function __randomizeString (o : Object, key : String) : String {
+				var src : Array = o.mySelectionSrc;
+				var current : Object = o.myString;
+				var choice : Object = current;
+				do {
+					choice = src[Math.floor (Math.random() * src.length)];
+				} while (choice === current);
+				return String(choice);
+			}
+			
+			/**
+			 * Sorting function for helper function `__arraysAreEqual()`
+			 */
+			private function __sortChoiceOptions (optionA : Object, optionB : Object) : int {
+				var labelA : String = optionA.label || String(optionA);
+				var labelB : String = optionB.label || String(optionB);
+				return (labelA > labelB)? 1 : (labelA < labelB)? -1 : 0;
+			} 
+		]]>
+	</fx:Script>
+	
+	<!-- Area for generated UI Components -->
+	<s:SkinnableContainer left="10" top="10" right="0" bottom="140">
+		<s:Scroller width="100%" height="100%">
+			<s:Group id="renderingArea">
+				<s:layout>
+					<s:VerticalLayout horizontalAlign="justify" gap="10" paddingRight="10" />
+				</s:layout>
+			</s:Group>
+		</s:Scroller>
+	</s:SkinnableContainer>
+
+	<!-- Area for testing buttons -->
+	<s:Label text="Programmatically change the value associated with..." left="10" right="10" bottom="120"/>
+	<s:Group left="10" right="10" bottom="10" height="100">
+		<s:layout>
+			<s:TileLayout horizontalGap="10" verticalGap="10" columnAlign="justifyUsingWidth"/>
+		</s:layout>
+		<s:Button label="My Number" click="_onTestButtonClicked ('myNumber', __increaseInteger)" />
+		<s:Button label="My Percent" click="_onTestButtonClicked ('myPercent', __increaseNumber)" />
+		<s:Button label="I am happy" click="_onTestButtonClicked ('i_am_happy', __toggleBoolean)" />
+		<s:Button label="My Selection" click="_onTestButtonClicked ('mySelection', __randomizeSingleChoice)" />
+		<s:Button label="My Other Selection" click="_onTestButtonClicked ('myOtherSelection', __randomizeSingleChoice)" />
+		<s:Button label="My List" click="_onTestButtonClicked ('myList', __randomizeMultipleChoice)" />
+		<s:Button label="My String" click="_onTestButtonClicked ('myString', __randomizeString)" />
+		<s:Button label="Generate Again" fontWeight="bold" click="_generate()" />
+	</s:Group>
+	
+</s:WindowedApplication>

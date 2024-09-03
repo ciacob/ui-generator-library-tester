@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:WindowedApplication xmlns:fx="http://ns.adobe.com/mxml/2009" 
+					   xmlns:s="library://ns.adobe.com/flex/spark" 
+					   xmlns:mx="library://ns.adobe.com/flex/mx"
+					   initialize="_onInitialize (event)"
+					   height="600"
+					   title="Test 2 - Generating from simple Object">
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.events.FlexEvent;
+			
+			import ro.ciacob.desktop.ui.UiFlexBuilder;
+			import ro.ciacob.desktop.ui.UiGenerator;
+			
+			private const _sourceObject : Object = {
+				myNumber : 45.2,
+				myOtherNumber : 0.00001,
+				myInteger: 3,
+				myBoolean : true,
+				myObject : {},
+				myObjectSrc: ['red', 'green', 'blue'],
+				myObject2 : {},
+				myObject2Src: [{label: 'small', value: 1}, {label: 'medium', value: 3}, {label: 'large', value: 5}],
+				myArray : [],
+				myArraySrc : [{label: 'Bach', value: 3}, {label: 'Haydn', value: 2}, {label: 'Mozart', value: 1}],
+				myString : "",
+
+				// Provide more configuration fo the UI components to be generated
+				uiGeneratorConfig : {
+					myNumber: { Index: 1 },
+					myOtherNumber : { Index: 1, Minimum: 0, Maximum: 1},
+					myInteger: { Index: 3, Description: "This is my integer." },
+					myBoolean : { Index: 4 },
+					myObject : { Index: 5 },
+					myObject2 : { Index : 6 },
+					myArray: { Index : 7 },
+					myString:  { Index : 8 }
+				}
+			};
+			
+			private var _uiGenerator : UiGenerator;
+			
+			/**
+			 * Stage-two constructor-like function for MXML classes. Components are initialized
+			 * but not configured and not rendered yet.
+			 */
+			private function _onInitialize (event:FlexEvent) : void {
+				_sourceObject.myObject2 = _sourceObject.myObject2Src[1];
+				_uiGenerator = new UiGenerator (UiFlexBuilder);
+				_uiGenerator.generate (_sourceObject, renderingArea, _onRenderingComplete, _onChange);
+			}
+			
+			/**
+			 * Fired when generating UI Components has completed.
+			 */
+			private function _onRenderingComplete () : void {
+				trace ("Generating UI Components done.");
+			}
+
+			/**
+			 * Fired when user interacts with a generated component changing its value.
+			 */
+			private function _onChange (key : String, value : Object) : void {
+				trace ('Changed: ', key, JSON.stringify(value));
+				trace ('Originator is: ' + JSON.stringify(_sourceObject, null, '\t'));
+			}
+			
+			/**
+			 * Triggered when a test button is clicked.
+			 */
+			private function _onTestButtonClicked () : void {
+			}
+		]]>
+	</fx:Script>
+	
+	<!-- Area for generated UI Components -->
+	<s:SkinnableContainer left="10" top="10" right="0" bottom="100">
+		<s:Scroller width="100%" height="100%">
+			<s:Group id="renderingArea">
+				<s:layout>
+					<s:VerticalLayout horizontalAlign="justify" gap="10" paddingRight="10" />
+				</s:layout>
+			</s:Group>
+		</s:Scroller>
+	</s:SkinnableContainer>
+	
+	<!-- Area for testing buttons -->
+	<s:Label text="Add test buttons as needed..." left="10" right="10" bottom="80"/>
+	<s:Group left="10" right="10" bottom="10" height="60">
+		<s:layout>
+			<s:TileLayout horizontalGap="10" verticalGap="10" columnAlign="justifyUsingWidth"/>
+		</s:layout>
+		<s:Button label="My Number" click="_onTestButtonClicked ()" />
+	</s:Group>
+	
+</s:WindowedApplication>
